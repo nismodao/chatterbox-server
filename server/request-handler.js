@@ -29,6 +29,7 @@ var requestHandler = function(request, response) {
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
+
   // The outgoing status.
   var statusCode = 200;
 
@@ -39,11 +40,76 @@ var requestHandler = function(request, response) {
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = 'text/plain';
+  
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
+  
+  
+  headers['Content-Type'] = 'application/json';
+  var obj = { results: [
+    {
+      username: 'defaultName',
+      roomname: 'defaultroom',
+      text: 'defaultText'
+    }
+  ]};
+
+  if (!(request.url.indexOf('/classes/messages') > -1 || request.url.indexOf('/send') > -1 || request.url.indexOf('/classes/room') > -1)) {
+    //invalid path
+    statusCode = 404;
+  } else if (request.method === 'GET') {
+    
+    statusCode = 200;
+    console.log('get');
+
+  
+  } else if (request.method === 'POST') {
+    statusCode = 201;
+    console.log('post');
+    var body = '';
+
+    // request.on('data', function(chunk) {
+    //     //console.log('Received body data:');
+    //   body += chunk;
+    //   var obj;
+
+    //   if (body.length > 0) {
+    //     body = JSON.parse(body);
+    //     obj = { results: [{
+    //       username: body.username,
+    //       text: body.text,
+    //       roomname: body.roomname
+    //     }]};
+    //   }
+    
+      // response.writeHead(statusCode, headers);
+      // response.end(JSON.stringify(obj));
+    //});
+  }
+
   response.writeHead(statusCode, headers);
+  response.end(JSON.stringify(obj));
+
+    // request.on('end', function () {
+    //     console.log('POSTed:' + body);
+    //   var obj;
+
+    //   if (body.length > 0) {
+    //     body = JSON.parse(body);
+    //     obj = { results: [{
+    //       username: body.username,
+    //       text: body.text,
+    //       roomname: body.roomname
+    //     }]};
+    //   }
+    
+    //   response.writeHead(statusCode, headers);
+    //   response.end(JSON.stringify(obj));
+      
+    // });
+  //}
+};
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
@@ -52,8 +118,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end('Hello, World!');
-};
+
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
 // This code allows this server to talk to websites that
@@ -70,4 +135,6 @@ var defaultCorsHeaders = {
   'access-control-allow-headers': 'content-type, accept',
   'access-control-max-age': 10 // Seconds.
 };
+
+module.exports.requestHandler = requestHandler;
 
