@@ -22,29 +22,11 @@ var requestHandler = function(request, response) {
   // Documentation for both request and response can be found in the HTTP section at
   // http://nodejs.org/documentation/api/
 
-  // Do some basic logging.
-  //
-  // Adding more logging to your server can be an easy way to get passive
-  // debugging help, but you should always be careful about leaving stray
-  // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
-
-  // The outgoing status.
   var statusCode = 200;
 
-  // See the note below about CORS headers.
-  var headers = defaultCorsHeaders;
-
-  // Tell the client we are sending them plain text.
-  //
-  // You will need to change this if you are sending something
-  // other than plain text, like JSON or HTML.
-  
-
-  // .writeHead() writes to the request line and headers of the response,
-  // which includes the status and all headers.
-  
+  var headers = defaultCorsHeaders;  
   
   headers['Content-Type'] = 'application/json';
   var obj = { results: [
@@ -56,59 +38,17 @@ var requestHandler = function(request, response) {
   ]};
 
   if (!(request.url.indexOf('/classes/messages') > -1 || request.url.indexOf('/send') > -1 || request.url.indexOf('/classes/room') > -1)) {
-    //invalid path
     statusCode = 404;
   } else if (request.method === 'GET') {
-    
     statusCode = 200;
-    console.log('get');
-
-  
   } else if (request.method === 'POST') {
     statusCode = 201;
-    console.log('post');
-    var body = '';
-
-    // request.on('data', function(chunk) {
-    //     //console.log('Received body data:');
-    //   body += chunk;
-    //   var obj;
-
-    //   if (body.length > 0) {
-    //     body = JSON.parse(body);
-    //     obj = { results: [{
-    //       username: body.username,
-    //       text: body.text,
-    //       roomname: body.roomname
-    //     }]};
-    //   }
-    
-      // response.writeHead(statusCode, headers);
-      // response.end(JSON.stringify(obj));
-    //});
   }
 
   response.writeHead(statusCode, headers);
-  response.end(JSON.stringify(obj));
+  return response.end(JSON.stringify(obj));
 
-    // request.on('end', function () {
-    //     console.log('POSTed:' + body);
-    //   var obj;
 
-    //   if (body.length > 0) {
-    //     body = JSON.parse(body);
-    //     obj = { results: [{
-    //       username: body.username,
-    //       text: body.text,
-    //       roomname: body.roomname
-    //     }]};
-    //   }
-    
-    //   response.writeHead(statusCode, headers);
-    //   response.end(JSON.stringify(obj));
-      
-    // });
-  //}
 };
 
   // Make sure to always call response.end() - Node may not send
